@@ -9,10 +9,13 @@ import org.springframework.stereotype.Component;
 public class DataSource {
   public Connection getConnection() {
     try {
+      Class.forName("org.postgresql.Driver");
       return DriverManager.getConnection(
           System.getenv("JDBC_URL"), System.getenv("USERNAME"), System.getenv("PASSWORD"));
     } catch (SQLException e) {
       throw new RuntimeException("Database connection error", e);
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException("PostgreSQL driver not found", e);
     }
   }
 
