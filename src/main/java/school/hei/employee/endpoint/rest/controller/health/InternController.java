@@ -22,11 +22,17 @@ public class InternController {
   public ResponseEntity<List<Intern>> getAll(
       @RequestParam(required = false) String department,
       @RequestParam(required = false) Boolean remunere,
-      @RequestParam(required = false) Long managerId)
+      @RequestParam(required = false) Long managerId,
+      @RequestParam(defaultValue = "0") int _start,
+      @RequestParam(defaultValue = "10") int _end,
+      @RequestParam(defaultValue = "id") String _sort,
+      @RequestParam(defaultValue = "ASC") String _order)
       throws SQLException {
-    List<Intern> result = service.findAll(department, remunere, managerId);
+    List<Intern> result =
+        service.findAll(department, remunere, managerId, _start, _end, _sort, _order);
+    int total = service.count(department, remunere, managerId);
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Range", "interns 0-" + result.size() + "/" + result.size());
+    headers.add("Content-Range", "interns " + _start + "-" + _end + "/" + total);
     return ResponseEntity.ok().headers(headers).body(result);
   }
 

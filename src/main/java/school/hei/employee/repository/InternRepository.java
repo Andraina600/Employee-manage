@@ -32,7 +32,14 @@ public class InternRepository {
         rs.getLong("manager_id"));
   }
 
-  public List<Intern> findAll(String department, Boolean remunere, Long managerId)
+  public List<Intern> findAll(
+      String department,
+      Boolean remunere,
+      Long managerId,
+      int start,
+      int end,
+      String sort,
+      String order)
       throws SQLException {
     StringBuilder sql =
         new StringBuilder(
@@ -42,6 +49,9 @@ public class InternRepository {
     if (remunere != null) sql.append(" AND remunere = ?");
     if (managerId != null) sql.append(" AND manager_id = ?");
 
+    sql.append(" ORDER BY ").append(sort).append(" ").append(order);
+    sql.append(" LIMIT ? OFFSET ?");
+
     List<Intern> result = new ArrayList<>();
     try (Connection conn = dataSource.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql.toString())) {
@@ -50,11 +60,31 @@ public class InternRepository {
       if (department != null) ps.setString(i++, department);
       if (remunere != null) ps.setBoolean(i++, remunere);
       if (managerId != null) ps.setLong(i++, managerId);
+      ps.setInt(i++, end - start);
+      ps.setInt(i++, start);
 
       ResultSet rs = ps.executeQuery();
       while (rs.next()) result.add(map(rs));
     }
     return result;
+  }
+
+  public int count(String department, Boolean remunere, Long managerId) throws SQLException {
+    StringBuilder sql = new StringBuilder("SELECT COUNT(id) FROM interns WHERE 1=1");
+    if (department != null) sql.append(" AND department = ?");
+    if (remunere != null) sql.append(" AND remunere = ?");
+    if (managerId != null) sql.append(" AND manager_id = ?");
+
+    try (Connection conn = dataSource.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+      int i = 1;
+      if (department != null) ps.setString(i++, department);
+      if (remunere != null) ps.setBoolean(i++, remunere);
+      if (managerId != null) ps.setLong(i++, managerId);
+      ResultSet rs = ps.executeQuery();
+      if (rs.next()) return rs.getInt(1);
+    }
+    return 0;
   }
 
   public Intern findById(Long id) throws SQLException {
