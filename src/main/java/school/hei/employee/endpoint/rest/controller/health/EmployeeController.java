@@ -20,13 +20,13 @@ public class EmployeeController {
 
   @GetMapping
   public ResponseEntity<List<Employee>> getAll(
-          @RequestParam(required = false) String department,
-          @RequestParam(required = false) Boolean actif,
-          @RequestParam(defaultValue = "0") int _start,
-          @RequestParam(defaultValue = "10") int _end,
-          @RequestParam(defaultValue = "id") String _sort,
-          @RequestParam(defaultValue = "ASC") String _order
-  ) throws SQLException {
+      @RequestParam(required = false) String department,
+      @RequestParam(required = false) Boolean actif,
+      @RequestParam(defaultValue = "0") int _start,
+      @RequestParam(defaultValue = "10") int _end,
+      @RequestParam(defaultValue = "id") String _sort,
+      @RequestParam(defaultValue = "ASC") String _order)
+      throws SQLException {
     List<Employee> result = service.findAll(department, actif, _start, _end, _sort, _order);
     int total = service.count(department, actif);
     HttpHeaders headers = new HttpHeaders();

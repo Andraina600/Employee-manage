@@ -14,7 +14,9 @@ public class EmployeeService {
     this.repository = repository;
   }
 
-  public List<Employee> findAll(String department, Boolean actif, int start, int end, String sort, String order) throws SQLException {
+  public List<Employee> findAll(
+      String department, Boolean actif, int start, int end, String sort, String order)
+      throws SQLException {
     return repository.findAll(department, actif, start, end, sort, order);
   }
 
