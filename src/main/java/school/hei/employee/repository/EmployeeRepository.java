@@ -49,8 +49,8 @@ public class EmployeeRepository {
       int i = 1;
       if (department != null) ps.setString(i++, department);
       if (actif != null) ps.setBoolean(i++, actif);
-      ps.setInt(i++, end - start); // LIMIT
-      ps.setInt(i++, start); // OFFSET
+      ps.setInt(i++, end - start);
+      ps.setInt(i++, start);
 
       ResultSet rs = ps.executeQuery();
       while (rs.next()) result.add(map(rs));

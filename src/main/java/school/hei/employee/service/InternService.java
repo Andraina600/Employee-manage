@@ -15,9 +15,20 @@ public class InternService {
     this.repository = repository;
   }
 
-  public List<Intern> findAll(String department, Boolean remunere, Long managerId)
+  public List<Intern> findAll(
+      String department,
+      Boolean remunere,
+      Long managerId,
+      int start,
+      int end,
+      String sort,
+      String order)
       throws SQLException {
-    return repository.findAll(department, remunere, managerId);
+    return repository.findAll(department, remunere, managerId, start, end, sort, order);
+  }
+
+  public int count(String department, Boolean remunere, Long managerId) throws SQLException {
+    return repository.count(department, remunere, managerId);
   }
 
   public Intern findById(Long id) throws SQLException {
