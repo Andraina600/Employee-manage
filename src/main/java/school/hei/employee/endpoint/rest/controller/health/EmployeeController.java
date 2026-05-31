@@ -30,7 +30,8 @@ public class EmployeeController {
     List<Employee> result = service.findAll(department, actif, _start, _end, _sort, _order);
     int total = service.count(department, actif);
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Range", "employees " + _start + "-" + _end + "/" + total);
+    headers.add("X-Total-Count", String.valueOf(total));
+    headers.add("Access-Control-Expose-Headers", "X-Total-Count");
     return ResponseEntity.ok().headers(headers).body(result);
   }
 

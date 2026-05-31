@@ -32,7 +32,8 @@ public class InternController {
         service.findAll(department, remunere, managerId, _start, _end, _sort, _order);
     int total = service.count(department, remunere, managerId);
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Range", "interns " + _start + "-" + _end + "/" + total);
+    headers.add("X-Total-Count", String.valueOf(total));
+    headers.add("Access-Control-Expose-Headers", "X-Total-Count");
     return ResponseEntity.ok().headers(headers).body(result);
   }
 
