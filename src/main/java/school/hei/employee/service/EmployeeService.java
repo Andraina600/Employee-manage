@@ -14,8 +14,12 @@ public class EmployeeService {
     this.repository = repository;
   }
 
-  public List<Employee> findAll(String department, Boolean actif) throws SQLException {
-    return repository.findAll(department, actif);
+  public List<Employee> findAll(String department, Boolean actif, int start, int end, String sort, String order) throws SQLException {
+    return repository.findAll(department, actif, start, end, sort, order);
+  }
+
+  public int count(String department, Boolean actif) throws SQLException {
+    return repository.count(department, actif);
   }
 
   public Employee findById(Long id) throws SQLException {
