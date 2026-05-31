@@ -10,11 +10,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Employee {
-    private Long id;
-    private String firstname;
-    private String lastname;
-    private String email;
-    private String department;
-    private Double salary;
-    private Boolean actif;
+  private Long id;
+  private String firstname;
+  private String lastname;
+  private String email;
+  private String department;
+  private Double salary;
+  private Boolean actif;
 }
