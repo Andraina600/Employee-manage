@@ -1,13 +1,13 @@
 package school.hei.employee.endpoint.rest.controller.health;
-import school.hei.employee.entity.Employee;
-import school.hei.employee.handler.NotFoundException;
-import school.hei.employee.service.EmployeeService;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
-import school.hei.employee.validator.EmployeeValidator;
 
 import java.sql.SQLException;
 import java.util.List;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+import school.hei.employee.entity.Employee;
+import school.hei.employee.handler.NotFoundException;
+import school.hei.employee.service.EmployeeService;
+import school.hei.employee.validator.EmployeeValidator;
 
 @RestController
 @RequestMapping("/employees")
@@ -17,20 +17,19 @@ public class EmployeeController {
   private final EmployeeService service;
   private final EmployeeValidator validator;
 
-  public EmployeeController(EmployeeService service,  EmployeeValidator validator) {
+  public EmployeeController(EmployeeService service, EmployeeValidator validator) {
     this.service = service;
     this.validator = validator;
   }
 
   @GetMapping
   public ResponseEntity<?> getAll(
-          @RequestParam(required = false) String department,
-          @RequestParam(required = false) Boolean actif,
-          @RequestParam(defaultValue = "0") int _start,
-          @RequestParam(defaultValue = "10") int _end,
-          @RequestParam(defaultValue = "id") String _sort,
-          @RequestParam(defaultValue = "ASC") String _order
-  ) {
+      @RequestParam(required = false) String department,
+      @RequestParam(required = false) Boolean actif,
+      @RequestParam(defaultValue = "0") int _start,
+      @RequestParam(defaultValue = "10") int _end,
+      @RequestParam(defaultValue = "id") String _sort,
+      @RequestParam(defaultValue = "ASC") String _order) {
     try {
       List<Employee> result = service.findAll(department, actif, _start, _end, _sort, _order);
       int total = service.count(department, actif);
@@ -38,7 +37,7 @@ public class EmployeeController {
       headers.add("X-Total-Count", String.valueOf(total));
       headers.add("Access-Control-Expose-Headers", "X-Total-Count");
       return ResponseEntity.status(HttpStatus.OK).headers(headers).body(result);
-    }catch (SQLException e){
+    } catch (SQLException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
   }
@@ -57,7 +56,8 @@ public class EmployeeController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Employee> update(@PathVariable Long id, @RequestBody Employee employee) throws SQLException {
+  public ResponseEntity<Employee> update(@PathVariable Long id, @RequestBody Employee employee)
+      throws SQLException {
     Employee updatedEmployee = service.update(id, employee);
     if (updatedEmployee == null) throw new NotFoundException("Employee not found with id: " + id);
     return ResponseEntity.status(HttpStatus.OK).body(updatedEmployee);
