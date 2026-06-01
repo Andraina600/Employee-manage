@@ -11,7 +11,7 @@ import school.hei.employee.validator.EmployeeValidator;
 
 @RestController
 @RequestMapping("/employees")
-@CrossOrigin(origins = "*", exposedHeaders = "X-Total-Count")
+@CrossOrigin(origins = "http://localhost:5173/", exposedHeaders = "X-Total-Count")
 public class EmployeeController {
 
   private final EmployeeService service;

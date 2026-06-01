@@ -11,7 +11,7 @@ import school.hei.employee.validator.InternValidator;
 
 @RestController
 @RequestMapping("/interns")
-@CrossOrigin(origins = "*", exposedHeaders = "X-Total-Count")
+@CrossOrigin(origins = "http://localhost:5173/", exposedHeaders = "X-Total-Count")
 public class InternController {
 
   private final InternService service;
