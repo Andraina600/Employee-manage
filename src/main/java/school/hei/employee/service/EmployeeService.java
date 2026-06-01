@@ -15,13 +15,13 @@ public class EmployeeService {
   }
 
   public List<Employee> findAll(
-      String department, Boolean actif, int start, int end, String sort, String order)
-      throws SQLException {
-    return repository.findAll(department, actif, start, end, sort, order);
+          String q, String department, Boolean actif,
+          int start, int end, String sort, String order) throws SQLException {
+    return repository.findAll(q, department, actif, start, end, sort, order);
   }
 
-  public int count(String department, Boolean actif) throws SQLException {
-    return repository.count(department, actif);
+  public int count(String q, String department, Boolean actif) throws SQLException {
+    return repository.count(q, department, actif);
   }
 
   public Employee findById(Long id) throws SQLException {

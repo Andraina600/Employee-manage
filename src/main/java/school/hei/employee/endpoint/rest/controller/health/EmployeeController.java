@@ -24,29 +24,29 @@ public class EmployeeController {
 
   @GetMapping
   public ResponseEntity<?> getAll(
-      @RequestParam(required = false) String department,
-      @RequestParam(required = false) Boolean actif,
-      @RequestParam(defaultValue = "0") int _start,
-      @RequestParam(defaultValue = "10") int _end,
-      @RequestParam(defaultValue = "id") String _sort,
-      @RequestParam(defaultValue = "ASC") String _order) {
+          @RequestParam(required = false) String q,
+          @RequestParam(required = false) String department,
+          @RequestParam(required = false) Boolean actif,
+          @RequestParam(defaultValue = "0")   int _start,
+          @RequestParam(defaultValue = "10")  int _end,
+          @RequestParam(defaultValue = "id")  String _sort,
+          @RequestParam(defaultValue = "ASC") String _order) {
     try {
-      List<Employee> result = service.findAll(department, actif, _start, _end, _sort, _order);
-      int total = service.count(department, actif);
+      List<Employee> result = service.findAll(q, department, actif, _start, _end, _sort, _order);
+      int total = service.count(q, department, actif);
       HttpHeaders headers = new HttpHeaders();
       headers.add("X-Total-Count", String.valueOf(total));
       headers.add("Access-Control-Expose-Headers", "X-Total-Count");
-      return ResponseEntity.status(HttpStatus.OK).headers(headers).body(result);
+      return ResponseEntity.ok().headers(headers).body(result);
     } catch (SQLException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
   }
-
   @GetMapping("/{id}")
   public ResponseEntity<Employee> getOne(@PathVariable Long id) throws SQLException {
     Employee employee = service.findById(id);
     if (employee == null) throw new NotFoundException("Employee not found with id: " + id);
-    return ResponseEntity.ok(employee);
+    return ResponseEntity.status(HttpStatus.OK).body(employee);
   }
 
   @PostMapping

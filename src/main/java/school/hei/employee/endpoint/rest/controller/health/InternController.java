@@ -48,7 +48,7 @@ public class InternController {
   public ResponseEntity<Intern> getOne(@PathVariable Long id) throws SQLException {
     Intern intern = service.findById(id);
     if (intern == null) throw new NotFoundException("Intern not found with id: " + id);
-    return ResponseEntity.ok(intern);
+    return ResponseEntity.status(HttpStatus.OK).body(intern);
   }
 
   @PostMapping
