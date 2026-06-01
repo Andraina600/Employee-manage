@@ -24,6 +24,7 @@ public class InternController {
 
   @GetMapping
   public ResponseEntity<?> getAll(
+      @RequestParam(required = false) String q,
       @RequestParam(required = false) String department,
       @RequestParam(required = false) Boolean remunere,
       @RequestParam(required = false) Long managerId,
@@ -33,8 +34,8 @@ public class InternController {
       @RequestParam(defaultValue = "ASC") String _order) {
     try {
       List<Intern> result =
-          service.findAll(department, remunere, managerId, _start, _end, _sort, _order);
-      int total = service.count(department, remunere, managerId);
+          service.findAll(q, department, remunere, managerId, _start, _end, _sort, _order);
+      int total = service.count(q, department, remunere, managerId);
       HttpHeaders headers = new HttpHeaders();
       headers.add("X-Total-Count", String.valueOf(total));
       headers.add("Access-Control-Expose-Headers", "X-Total-Count");

@@ -15,8 +15,8 @@ public class EmployeeService {
   }
 
   public List<Employee> findAll(
-          String q, String department, Boolean actif,
-          int start, int end, String sort, String order) throws SQLException {
+      String q, String department, Boolean actif, int start, int end, String sort, String order)
+      throws SQLException {
     return repository.findAll(q, department, actif, start, end, sort, order);
   }
 

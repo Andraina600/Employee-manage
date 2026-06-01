@@ -24,13 +24,13 @@ public class EmployeeController {
 
   @GetMapping
   public ResponseEntity<?> getAll(
-          @RequestParam(required = false) String q,
-          @RequestParam(required = false) String department,
-          @RequestParam(required = false) Boolean actif,
-          @RequestParam(defaultValue = "0")   int _start,
-          @RequestParam(defaultValue = "10")  int _end,
-          @RequestParam(defaultValue = "id")  String _sort,
-          @RequestParam(defaultValue = "ASC") String _order) {
+      @RequestParam(required = false) String q,
+      @RequestParam(required = false) String department,
+      @RequestParam(required = false) Boolean actif,
+      @RequestParam(defaultValue = "0") int _start,
+      @RequestParam(defaultValue = "10") int _end,
+      @RequestParam(defaultValue = "id") String _sort,
+      @RequestParam(defaultValue = "ASC") String _order) {
     try {
       List<Employee> result = service.findAll(q, department, actif, _start, _end, _sort, _order);
       int total = service.count(q, department, actif);
@@ -42,6 +42,7 @@ public class EmployeeController {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
   }
+
   @GetMapping("/{id}")
   public ResponseEntity<Employee> getOne(@PathVariable Long id) throws SQLException {
     Employee employee = service.findById(id);

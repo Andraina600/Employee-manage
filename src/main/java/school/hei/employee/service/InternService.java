@@ -16,6 +16,7 @@ public class InternService {
   }
 
   public List<Intern> findAll(
+      String q,
       String department,
       Boolean remunere,
       Long managerId,
@@ -24,11 +25,12 @@ public class InternService {
       String sort,
       String order)
       throws SQLException {
-    return repository.findAll(department, remunere, managerId, start, end, sort, order);
+    return repository.findAll(q, department, remunere, managerId, start, end, sort, order);
   }
 
-  public int count(String department, Boolean remunere, Long managerId) throws SQLException {
-    return repository.count(department, remunere, managerId);
+  public int count(String q, String department, Boolean remunere, Long managerId)
+      throws SQLException {
+    return repository.count(q, department, remunere, managerId);
   }
 
   public Intern findById(Long id) throws SQLException {

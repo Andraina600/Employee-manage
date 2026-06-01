@@ -30,6 +30,7 @@ public class InternRepository {
   }
 
   public List<Intern> findAll(
+      String q,
       String department,
       Boolean remunere,
       Long managerId,
@@ -37,10 +38,14 @@ public class InternRepository {
       int end,
       String sort,
       String order) {
+
     StringBuilder sql =
         new StringBuilder(
             "SELECT id, firstname, lastname, email, department, salary, remunere, actif, manager_id"
                 + " FROM interns WHERE 1=1");
+
+    if (q != null && !q.isBlank())
+      sql.append(" AND (LOWER(firstname) LIKE ? OR LOWER(lastname) LIKE ?)");
     if (department != null) sql.append(" AND department = ?");
     if (remunere != null) sql.append(" AND remunere = ?");
     if (managerId != null) sql.append(" AND manager_id = ?");
@@ -51,6 +56,11 @@ public class InternRepository {
     try (Connection conn = dataSource.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql.toString())) {
       int i = 1;
+      if (q != null && !q.isBlank()) {
+        String like = "%" + q.toLowerCase() + "%";
+        ps.setString(i++, like);
+        ps.setString(i++, like);
+      }
       if (department != null) ps.setString(i++, department);
       if (remunere != null) ps.setBoolean(i++, remunere);
       if (managerId != null) ps.setLong(i++, managerId);
@@ -64,8 +74,11 @@ public class InternRepository {
     return result;
   }
 
-  public int count(String department, Boolean remunere, Long managerId) {
+  public int count(String q, String department, Boolean remunere, Long managerId) {
     StringBuilder sql = new StringBuilder("SELECT COUNT(id) FROM interns WHERE 1=1");
+
+    if (q != null && !q.isBlank())
+      sql.append(" AND (LOWER(firstname) LIKE ? OR LOWER(lastname) LIKE ?)");
     if (department != null) sql.append(" AND department = ?");
     if (remunere != null) sql.append(" AND remunere = ?");
     if (managerId != null) sql.append(" AND manager_id = ?");
@@ -73,6 +86,11 @@ public class InternRepository {
     try (Connection conn = dataSource.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql.toString())) {
       int i = 1;
+      if (q != null && !q.isBlank()) {
+        String like = "%" + q.toLowerCase() + "%";
+        ps.setString(i++, like);
+        ps.setString(i++, like);
+      }
       if (department != null) ps.setString(i++, department);
       if (remunere != null) ps.setBoolean(i++, remunere);
       if (managerId != null) ps.setLong(i++, managerId);

@@ -28,22 +28,23 @@ public class EmployeeRepository {
   }
 
   public List<Employee> findAll(
-          String q, String department, Boolean actif,
-          int start, int end, String sort, String order) {
+      String q, String department, Boolean actif, int start, int end, String sort, String order) {
 
-    StringBuilder sql = new StringBuilder(
-            "SELECT id, firstname, lastname, email, department, salary, actif FROM employees WHERE 1=1");
+    StringBuilder sql =
+        new StringBuilder(
+            "SELECT id, firstname, lastname, email, department, salary, actif FROM employees WHERE"
+                + " 1=1");
 
     if (q != null && !q.isBlank())
       sql.append(" AND (LOWER(firstname) LIKE ? OR LOWER(lastname) LIKE ?)");
     if (department != null) sql.append(" AND department = ?");
-    if (actif != null)      sql.append(" AND actif = ?");
+    if (actif != null) sql.append(" AND actif = ?");
     sql.append(" ORDER BY ").append(sort).append(" ").append(order);
     sql.append(" LIMIT ? OFFSET ?");
 
     List<Employee> result = new ArrayList<>();
     try (Connection conn = dataSource.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+        PreparedStatement ps = conn.prepareStatement(sql.toString())) {
       int i = 1;
       if (q != null && !q.isBlank()) {
         String like = "%" + q.toLowerCase() + "%";
@@ -51,7 +52,7 @@ public class EmployeeRepository {
         ps.setString(i++, like);
       }
       if (department != null) ps.setString(i++, department);
-      if (actif != null)      ps.setBoolean(i++, actif);
+      if (actif != null) ps.setBoolean(i++, actif);
       ps.setInt(i++, end - start);
       ps.setInt(i++, start);
       ResultSet rs = ps.executeQuery();
@@ -68,10 +69,10 @@ public class EmployeeRepository {
     if (q != null && !q.isBlank())
       sql.append(" AND (LOWER(firstname) LIKE ? OR LOWER(lastname) LIKE ?)");
     if (department != null) sql.append(" AND department = ?");
-    if (actif != null)      sql.append(" AND actif = ?");
+    if (actif != null) sql.append(" AND actif = ?");
 
     try (Connection conn = dataSource.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+        PreparedStatement ps = conn.prepareStatement(sql.toString())) {
       int i = 1;
       if (q != null && !q.isBlank()) {
         String like = "%" + q.toLowerCase() + "%";
@@ -79,7 +80,7 @@ public class EmployeeRepository {
         ps.setString(i++, like);
       }
       if (department != null) ps.setString(i++, department);
-      if (actif != null)      ps.setBoolean(i++, actif);
+      if (actif != null) ps.setBoolean(i++, actif);
       ResultSet rs = ps.executeQuery();
       if (rs.next()) return rs.getInt(1);
     } catch (SQLException e) {
@@ -87,6 +88,7 @@ public class EmployeeRepository {
     }
     return 0;
   }
+
   public Employee findById(Long id) {
     String sql =
         "SELECT id, firstname, lastname, email, department, salary, actif FROM employees WHERE id ="
