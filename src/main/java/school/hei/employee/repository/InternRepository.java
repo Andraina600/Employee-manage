@@ -1,9 +1,6 @@
 package school.hei.employee.repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Repository;
@@ -39,8 +36,7 @@ public class InternRepository {
       int start,
       int end,
       String sort,
-      String order)
-      throws SQLException {
+      String order) {
     StringBuilder sql =
         new StringBuilder(
             "SELECT id, firstname, lastname, email, department, salary, remunere, actif, manager_id"
@@ -48,28 +44,27 @@ public class InternRepository {
     if (department != null) sql.append(" AND department = ?");
     if (remunere != null) sql.append(" AND remunere = ?");
     if (managerId != null) sql.append(" AND manager_id = ?");
-
     sql.append(" ORDER BY ").append(sort).append(" ").append(order);
     sql.append(" LIMIT ? OFFSET ?");
 
     List<Intern> result = new ArrayList<>();
     try (Connection conn = dataSource.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-
       int i = 1;
       if (department != null) ps.setString(i++, department);
       if (remunere != null) ps.setBoolean(i++, remunere);
       if (managerId != null) ps.setLong(i++, managerId);
       ps.setInt(i++, end - start);
       ps.setInt(i++, start);
-
       ResultSet rs = ps.executeQuery();
       while (rs.next()) result.add(map(rs));
+    } catch (SQLException e) {
+      throw new RuntimeException("Error fetching interns", e);
     }
     return result;
   }
 
-  public int count(String department, Boolean remunere, Long managerId) throws SQLException {
+  public int count(String department, Boolean remunere, Long managerId) {
     StringBuilder sql = new StringBuilder("SELECT COUNT(id) FROM interns WHERE 1=1");
     if (department != null) sql.append(" AND department = ?");
     if (remunere != null) sql.append(" AND remunere = ?");
@@ -83,11 +78,13 @@ public class InternRepository {
       if (managerId != null) ps.setLong(i++, managerId);
       ResultSet rs = ps.executeQuery();
       if (rs.next()) return rs.getInt(1);
+    } catch (SQLException e) {
+      throw new RuntimeException("Error counting interns", e);
     }
     return 0;
   }
 
-  public Intern findById(Long id) throws SQLException {
+  public Intern findById(Long id) {
     String sql =
         "SELECT id, firstname, lastname, email, department, salary, remunere, actif, manager_id"
             + " FROM interns WHERE id = ?";
@@ -96,11 +93,13 @@ public class InternRepository {
       ps.setLong(1, id);
       ResultSet rs = ps.executeQuery();
       if (rs.next()) return map(rs);
+    } catch (SQLException e) {
+      throw new RuntimeException("Error fetching intern with id: " + id, e);
     }
     return null;
   }
 
-  public Intern save(Intern i) throws SQLException {
+  public Intern save(Intern i) {
     String sql =
         "INSERT INTO interns (firstname, lastname, email, department, salary, remunere, actif,"
             + " manager_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
@@ -116,11 +115,13 @@ public class InternRepository {
       ps.setLong(8, i.getManagerId());
       ResultSet rs = ps.executeQuery();
       if (rs.next()) i.setId(rs.getLong("id"));
+    } catch (SQLException e) {
+      throw new RuntimeException("Error saving intern", e);
     }
     return i;
   }
 
-  public Intern update(Long id, Intern i) throws SQLException {
+  public Intern update(Long id, Intern i) {
     String sql =
         "UPDATE interns SET firstname=?, lastname=?, email=?, department=?, salary=?, remunere=?,"
             + " actif=?, manager_id=? WHERE id=?";
@@ -137,16 +138,20 @@ public class InternRepository {
       ps.setLong(9, id);
       ps.executeUpdate();
       i.setId(id);
+    } catch (SQLException e) {
+      throw new RuntimeException("Error updating intern with id: " + id, e);
     }
     return i;
   }
 
-  public void delete(Long id) throws SQLException {
+  public void delete(Long id) {
     String sql = "DELETE FROM interns WHERE id = ?";
     try (Connection conn = dataSource.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setLong(1, id);
       ps.executeUpdate();
+    } catch (SQLException e) {
+      throw new RuntimeException("Error deleting intern with id: " + id, e);
     }
   }
 }
